@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import validator from 'validator';
 import User from '../models/userModel';
+import { DetailedUserProps } from '../types';
 
 const validateStringLength = (
   str: string,
@@ -33,3 +34,12 @@ export const validateRegister = async (req: Request): Promise<void> => {
     throw new Error('Enter a strong password');
   }
 };
+
+export const loginValidation = async (email: string): Promise<DetailedUserProps> => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error('Enter a registered email id.');
+
+  return user;
+};
+
+
