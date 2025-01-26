@@ -3,6 +3,7 @@ import { LoginReqProps, RegisterReqProps } from '../types';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import { loginValidation, validateRegister } from '../utils/authValidation';
+import transporter from '../config/nodemailer';
 
 export const register = async (
   req: Request<{}, {}, RegisterReqProps>,
@@ -35,6 +36,19 @@ export const register = async (
       secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    const mailOptions = {
+      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      to: email,
+      subject: 'Message from Flarelabs!',
+      html: `
+        <h1>Welcome to Flarelabs!</h1>
+        <p>Hey <b>${firstName}</b>,</p>
+        <p>Your account has been created with the email ID: <b>${email}</b>.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
 
     return res.status(200).json({
       message: 'user created successfully',
@@ -94,7 +108,10 @@ export const login = async (
   }
 };
 
-export const logout = async (  req: Request<{}, {}, {}>,res: Response): Promise<any> => {
+export const logout = async (
+  req: Request<{}, {}, {}>,
+  res: Response
+): Promise<any> => {
   try {
     res.clearCookie('token', {
       httpOnly: true,
