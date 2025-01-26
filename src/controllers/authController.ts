@@ -131,3 +131,45 @@ export const logout = async (
     }
   }
 };
+
+export const sendOtp = async (req: Request<{}, {}, {}>, res: Response) => {
+  try {
+    const { user } = req.user;
+
+    if (user.isVerified) {
+      return res.status(400).json({
+        message: 'User already verified',
+      });
+    }
+
+    const otp = String(Math.floor(646672 * Math.random()));
+
+    user.verificationOtp = otp;
+    user.verifyOtpExpiresAt = Date.now() + 5 * 60 * 1000;
+
+    await user.save();
+
+    const mailOptions = {
+      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      to: user.email,
+      subject: 'Accountverification OTP',
+      text: `Your OTP is ${otp}. Verify your account using this OTP.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      message: 'OTP send successfully',
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message,
+      });
+    } else {
+      return res.status(500).json({
+        message: 'An unexpected error occured.',
+      });
+    }
+  }
+};
