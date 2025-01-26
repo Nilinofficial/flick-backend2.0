@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "../models/userModel";
 
 export interface RegisterReqProps {
   firstName: string;
@@ -31,4 +32,17 @@ export interface UserProps {
 export  interface DetailedUserProps extends UserProps{
   comparePassword: (candidatePassword: string) => Promise<boolean>;
   generateJWT: () => Promise<string>;
+}
+
+interface jwtPayload {
+  _id: mongoose.Schema.Types.ObjectId;
+  exp:number
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: typeof User.prototype;
+    }
+  }
 }
