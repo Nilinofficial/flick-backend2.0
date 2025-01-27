@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { LoginReqProps, RegisterReqProps } from '../types';
+import { LoginReqProps, RegisterReqProps, VerifyOtpApiProps } from '../types';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import { loginValidation, validateRegister } from '../utils/authValidation';
@@ -132,10 +132,12 @@ export const logout = async (
   }
 };
 
-export const sendOtp = async (req: Request<{}, {}, {}>, res: Response) => {
+export const sendOtp = async (
+  req: Request<{}, {}, {}>,
+  res: Response
+): Promise<any> => {
   try {
-    const { user } = req.user;
-
+    const user = req.user;
     if (user.isVerified) {
       return res.status(400).json({
         message: 'User already verified',
@@ -145,14 +147,14 @@ export const sendOtp = async (req: Request<{}, {}, {}>, res: Response) => {
     const otp = String(Math.floor(646672 * Math.random()));
 
     user.verificationOtp = otp;
-    user.verifyOtpExpiresAt = Date.now() + 5 * 60 * 1000;
+    user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
 
     await user.save();
 
     const mailOptions = {
       from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
       to: user.email,
-      subject: 'Accountverification OTP',
+      subject: 'Account verification OTP',
       text: `Your OTP is ${otp}. Verify your account using this OTP.`,
     };
 
@@ -160,6 +162,65 @@ export const sendOtp = async (req: Request<{}, {}, {}>, res: Response) => {
 
     return res.status(200).json({
       message: 'OTP send successfully',
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message,
+      });
+    } else {
+      return res.status(500).json({
+        message: 'An unexpected error occured.',
+      });
+    }
+  }
+};
+
+export const verifyOtp = async (
+  req: Request<{}, {}, VerifyOtpApiProps>,
+  res: Response
+): Promise<any> => {
+  const user = req.user;
+  const { otp } = req.body;
+
+  if (!otp) {
+    res.status(404).json({ message: 'Invalid request' });
+  }
+
+  if (user.isVerified) {
+    return res
+      .status(400)
+      .json({ message: 'Account has been already verified' });
+  }
+
+  try {
+    if (user.verificationOtpExpiresAt < Date.now()) {
+      return res.status(400).json({ message: 'OTP has been expired' });
+    }
+
+    if (user.verificationOtp === '' || user.verificationOtp !== otp) {
+      return res.status(400).json({
+        message: 'Invalid OTP',
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationOtp = '';
+    user.verificationOtpExpiresAt = 0;
+
+    await user.save();
+
+    const mailOptions = {
+      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      to: user.email,
+      subject: 'Account Verified',
+      text: `Your account has been successfully verified`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      message: 'Account successfully Verified',
     });
   } catch (err: unknown) {
     if (err instanceof Error) {

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import User from "../models/userModel";
+import mongoose from 'mongoose';
+import User from '../models/userModel';
 
 export interface RegisterReqProps {
   firstName: string;
@@ -25,18 +25,17 @@ export interface UserProps {
   passwordResetOtp: string;
   passwordResetOtpExpiresAt: number;
   __v: number;
-  
 }
 
-
-export  interface DetailedUserProps extends UserProps{
+export interface DetailedUserProps extends UserProps {
   comparePassword: (candidatePassword: string) => Promise<boolean>;
   generateJWT: () => Promise<string>;
 }
 
-interface jwtPayload {
-  _id: mongoose.Schema.Types.ObjectId;
-  exp:number
+
+
+export interface VerifyOtpApiProps {
+  otp: string;
 }
 
 declare global {
