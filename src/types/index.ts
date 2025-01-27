@@ -32,8 +32,6 @@ export interface DetailedUserProps extends UserProps {
   generateJWT: () => Promise<string>;
 }
 
-
-
 export interface VerifyOtpApiProps {
   otp: string;
 }
@@ -44,4 +42,9 @@ declare global {
       user?: typeof User.prototype;
     }
   }
+}
+
+
+export interface updatePasswordProps{
+  newPassword:string
 }

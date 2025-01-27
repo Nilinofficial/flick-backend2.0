@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
-import { LoginReqProps, RegisterReqProps, VerifyOtpApiProps } from '../types';
+import {
+  LoginReqProps,
+  RegisterReqProps,
+  updatePasswordProps,
+  VerifyOtpApiProps,
+} from '../types';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import { loginValidation, validateRegister } from '../utils/authValidation';
 import transporter from '../config/nodemailer';
+import validator from 'validator';
 
 export const register = async (
   req: Request<{}, {}, RegisterReqProps>,
@@ -230,6 +236,78 @@ export const verifyOtp = async (
     } else {
       return res.status(500).json({
         message: 'An unexpected error occured.',
+      });
+    }
+  }
+};
+
+export const sendResetPasswordOtp = async (
+  req: Request<{}, {}, {}>,
+  res: Response
+): Promise<any> => {
+  const user = req.user;
+
+  try {
+    const otp = String(Math.floor(Math.random() * 738464));
+
+    user.passwordResetOtp = otp;
+    user.passwordResetOtpExpiresAt = Date.now() + +5 * 60 * 1000;
+    await user.save();
+
+    const mailOptions = {
+      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      to: user.email,
+      subject: 'Account verification OTP',
+      text: `Your OTP is ${otp}. Verify your account using this OTP.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      message: 'OTP send successfully',
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        message: err.message,
+      });
+    } else {
+      res.status(500).json({
+        message: 'An unexpected error occured',
+      });
+    }
+  }
+};
+
+export const updatePassword = async (
+  req: Request<{}, {}, updatePasswordProps>,
+  res: Response
+) => {
+  const user = req.user;
+  const { newPassword } = req.body;
+
+  try {
+    const isStrongPassword = await validator.isStrongPassword(newPassword);
+
+    if (!isStrongPassword) {
+      throw new Error('Enter a strong password');
+    }
+
+    const hashedPassword = bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Password updated successfully',
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message,
+      });
+    } else {
+      return res.status(500).json({
+        message: 'An unexpected error occured',
       });
     }
   }
