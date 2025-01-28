@@ -88,7 +88,7 @@ export const login = async (
     const isValidPassword = await user.comparePassword(password);
 
     if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid Credentials' });
     }
 
     const token = await user.generateJWT();
