@@ -47,4 +47,10 @@ declare global {
 
 export interface updatePasswordProps{
   newPassword:string
+  otp:string;
+  email:string;
+}
+
+export interface ResetPassSendOtpProps{
+  email:string
 }

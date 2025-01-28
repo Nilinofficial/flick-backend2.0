@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import {
   LoginReqProps,
   RegisterReqProps,
+  ResetPassSendOtpProps,
   updatePasswordProps,
   VerifyOtpApiProps,
 } from '../types';
@@ -242,12 +243,17 @@ export const verifyOtp = async (
 };
 
 export const sendResetPasswordOtp = async (
-  req: Request<{}, {}, {}>,
+  req: Request<{}, {}, ResetPassSendOtpProps>,
   res: Response
 ): Promise<any> => {
-  const user = req.user;
+  const { email } = req.body;
+
+  if (!email) return res.status(500).json({ message: 'Email is required' });
 
   try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'user not found' });
+
     const otp = String(Math.floor(Math.random() * 738464));
 
     user.passwordResetOtp = otp;
@@ -282,18 +288,38 @@ export const sendResetPasswordOtp = async (
 export const updatePassword = async (
   req: Request<{}, {}, updatePasswordProps>,
   res: Response
-) => {
-  const user = req.user;
-  const { newPassword } = req.body;
+): Promise<any> => {
+  const { newPassword, otp, email } = req.body;
+
+  if (!email) {
+    return res.status(500).json({ message: 'user not found' });
+  }
+  if (!newPassword) {
+    return res.status(500).json({ message: 'Enter a valid password' });
+  }
+  if (!otp) {
+    return res.status(500).json({ message: 'OTP is required' });
+  }
 
   try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'user not found' });
+
+    if (user.passwordResetOtpExpiresAt < Date.now()) {
+      return res.status(500).json({ message: 'OTP expired' });
+    }
+
+    if (user.passwordResetOtp === '' || user.passwordResetOtp !== otp) {
+      return res.status(500).json({ message: 'Invalid OTP' });
+    }
+
     const isStrongPassword = await validator.isStrongPassword(newPassword);
 
     if (!isStrongPassword) {
       throw new Error('Enter a strong password');
     }
 
-    const hashedPassword = bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     await user.save();
 
