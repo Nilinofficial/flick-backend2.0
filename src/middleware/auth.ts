@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
 
 export const userAuth = async (
-  req: Request<{}, {}, {}>,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<any> => {

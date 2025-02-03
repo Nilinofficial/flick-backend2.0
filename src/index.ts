@@ -4,6 +4,7 @@ import 'dotenv/config';
 import authRouter from './routes/auth';
 import { connectToDB } from './config/database';
 import userRouter from './routes/user';
+import requestRouter from './routes/request';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/profile', userRouter);
+app.use("/request",requestRouter);
 
 connectToDB().then(() =>
   app.listen(PORT, () => {

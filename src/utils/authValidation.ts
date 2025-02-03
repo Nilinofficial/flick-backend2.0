@@ -35,7 +35,9 @@ export const validateRegister = async (req: Request): Promise<void> => {
   }
 };
 
-export const loginValidation = async (email: string): Promise<DetailedUserProps> => {
+export const loginValidation = async (
+  email: string
+): Promise<DetailedUserProps> => {
   const user = await User.findOne({ email });
   if (!user) throw new Error('Enter a registered email id.');
 
