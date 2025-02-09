@@ -18,6 +18,11 @@ export const connectionRequestValidation = async (
   }
 
   const user = await User.findById(toUserId);
+  if (!user) {
+    throw new Error(
+      'Oops! You are trying to connect with a user that doesnt exists'
+    );
+  }
 
   const connectionExists = await connectionRequestModel.findOne({
     $or: [
@@ -29,8 +34,20 @@ export const connectionRequestValidation = async (
   if (connectionExists) {
     throw new Error('Oops ! There is a pending connection Request');
   }
+};
 
-  if (!user) {
-    throw new Error('Oops! You are trying to connect with an unknown User');
+export const connectionResponseValidation = async (
+  status: string,
+  requestId: string,
+  loggedInUserId: string
+) => {
+  const validResponseStatus = ['accepted', 'rejected'];
+
+  if (!validResponseStatus.includes(status)) {
+    throw new Error('Invalid status type');
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(requestId)) {
+    throw new Error('Invalid User ID format');
   }
 };
