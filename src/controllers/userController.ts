@@ -1,22 +1,31 @@
 import { Request, Response } from 'express';
+import connectionRequestModel from '../models/connectionRequestModel';
 
-export const getProfile = async (req: Request<{}, {}, {}>, res: Response):Promise<any> => {
+export const getFriendRequests = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const user = req.user;
 
-
   try {
-    return res.status(200).json({
-      name: user.name,
-      email: user.email,
-      isVerified: user.isVerified,
-      firstName: user.firstName,
-      lastName: user.lastName,
+    const requests = await connectionRequestModel.find({
+      toUserId: user._id,
+      status:'interested'
     });
-  } catch (err) {
+
+    return res.status(200).json({
+      message: 'List of all friend requests',
+      data: requests,
+    });
+  } catch (err: unknown) {
     if (err instanceof Error) {
-      return res.status(500).json({ message: err.message });
+      return res.status(400).json({
+        message: err.message,
+      });
     } else {
-      return 'An unexpected error occured';
+      return res.status(400).json({
+        message: `An unexpected error occured`,
+      });
     }
   }
 };

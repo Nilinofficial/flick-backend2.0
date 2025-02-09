@@ -1,10 +1,9 @@
-import express ,{ Router } from 'express';
-import authRouter from './auth';
-import { getProfile } from '../controllers/userController';
+import { Router } from 'express';
+import { getFriendRequests } from '../controllers/userController';
 import { userAuth } from '../middleware/auth';
 
-const userRouter: Router = express.Router();
+const userRouter = Router();
 
-userRouter.get('/',userAuth, getProfile);
+userRouter.get('/requests',userAuth, getFriendRequests);
 
 export default userRouter;
