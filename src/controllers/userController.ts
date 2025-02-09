@@ -11,7 +11,7 @@ export const getFriendRequests = async (
     const requests = await connectionRequestModel.find({
       toUserId: user._id,
       status:'interested'
-    });
+    }).populate("fromUserId",["firstName","lastName",]);
 
     return res.status(200).json({
       message: 'List of all friend requests',
