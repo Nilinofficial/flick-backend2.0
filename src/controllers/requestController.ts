@@ -9,10 +9,14 @@ export const handleConnectionRequest = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const user = req.user;
+  const userId = req.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 
   try {
-    const fromUserId = user._id;
+    const fromUserId = userId;
     const toUserId = req.params.toUserId;
     const status = req.params.status;
 
@@ -52,10 +56,15 @@ export const respondToRequest = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const user = req.user;
+  const userId = req.userId;
+
+  if (!userId) {
+    return res.status(401).json('Unauthorized');
+  }
+
   const status = req.params.status;
   const requestId = req.params.requestId;
-  const loggedInUserId = user._id;
+  const loggedInUserId = userId;
 
   try {
     await connectionResponseValidation(status, requestId, loggedInUserId);

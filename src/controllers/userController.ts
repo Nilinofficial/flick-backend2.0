@@ -5,11 +5,11 @@ export const getFriendRequests = async (
   req: Request,
   res: Response
 ): Promise<any> => {
-  const user = req.user;
+  const userId = req.userId;
 
   try {
     const requests = await connectionRequestModel.find({
-      toUserId: user._id,
+      toUserId: userId,
       status:'interested'
     }).populate("fromUserId",["firstName","lastName",]);
 

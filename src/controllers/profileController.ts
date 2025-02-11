@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
+import User from '../models/userModel';
 
-export const getProfile = async (req: Request<{}, {}, {}>, res: Response):Promise<any> => {
-  const user = req.user;
+export const getProfile = async (
+  req: Request<{}, {}, {}>,
+  res: Response
+): Promise<any> => {
+  const userId = req.userId;
 
-
+  const user = await User.findById(userId);
   try {
     return res.status(200).json({
       name: user.name,

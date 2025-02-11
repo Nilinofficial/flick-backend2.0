@@ -3,7 +3,7 @@ import User from '../models/userModel';
 import connectionRequestModel from '../models/connectionRequestModel';
 
 export const connectionRequestValidation = async (
-  fromUserId: string,
+  fromUserId: mongoose.Schema.Types.ObjectId,
   toUserId: string,
   status: string
 ) => {
@@ -39,7 +39,7 @@ export const connectionRequestValidation = async (
 export const connectionResponseValidation = async (
   status: string,
   requestId: string,
-  loggedInUserId: string
+  loggedInUserId: mongoose.Schema.Types.ObjectId
 ) => {
   const validResponseStatus = ['accepted', 'rejected'];
 

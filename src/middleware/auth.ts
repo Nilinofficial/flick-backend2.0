@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
 
 export const userAuth = async (
-  req: Request,
+  req: Request<{},{},{}>,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
@@ -23,11 +23,15 @@ export const userAuth = async (
 
     const { _id } = jwt.verify(token, secret) as JwtPayload;
 
-    const user = await User.findById({ _id });
-    if (!user) {
-      throw new Error('User not found');
+    if (!_id) {
+      return res.status(401).json({
+        message: 'Unauthorized',
+      });
     }
-    req.user = user;
+
+ 
+    
+    req.userId = _id;
     next();
   } catch (err: unknown) {
     if (err instanceof Error) {

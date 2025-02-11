@@ -144,7 +144,10 @@ export const sendOtp = async (
   res: Response
 ): Promise<any> => {
   try {
-    const user = req.user;
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+
     if (user.isVerified) {
       return res.status(400).json({
         message: 'User already verified',
@@ -187,12 +190,14 @@ export const verifyOtp = async (
   req: Request<{}, {}, VerifyOtpApiProps>,
   res: Response
 ): Promise<any> => {
-  const user = req.user;
+  const userId = req.userId;
   const { otp } = req.body;
 
   if (!otp) {
     res.status(404).json({ message: 'Invalid request' });
   }
+
+  const user = await User.findById(userId);
 
   if (user.isVerified) {
     return res

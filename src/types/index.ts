@@ -39,18 +39,17 @@ export interface VerifyOtpApiProps {
 declare global {
   namespace Express {
     interface Request {
-      user?: typeof User.prototype;
+      userId?: mongoose.Schema.Types.ObjectId;
     }
   }
 }
 
-
-export interface updatePasswordProps{
-  newPassword:string
-  otp:string;
-  email:string;
+export interface updatePasswordProps {
+  newPassword: string;
+  otp: string;
+  email: string;
 }
 
-export interface ResetPassSendOtpProps{
-  email:string
+export interface ResetPassSendOtpProps {
+  email: string;
 }
