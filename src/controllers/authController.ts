@@ -80,7 +80,7 @@ export const login = async (
   const { email, password } = req.body;
 
   if (!email || !password)
-    res.status(500).json({ message: 'All fields are required' });
+    res.status(400).json({ message: 'All fields are required' });
 
   try {
     const user = await loginValidation(email);
@@ -104,7 +104,7 @@ export const login = async (
     });
   } catch (err: unknown) {
     if (err instanceof Error) {
-      return res.status(500).json({
+      return res.status(400).json({
         message: err.message,
       });
     } else {
