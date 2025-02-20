@@ -8,7 +8,7 @@ authRouter.post('/register', register);
 authRouter.post('/login', login);
 authRouter.post('/logout', logout);
 authRouter.post("/sendOtp", userAuth, sendOtp);
-authRouter.post("/verifyOtp",verifyOtp);
+authRouter.post("/verifyOtp",userAuth,verifyOtp);
 authRouter.post('/sendResetPasswordOtp',sendResetPasswordOtp);
 authRouter.post('/updatePassword',updatePassword);
 

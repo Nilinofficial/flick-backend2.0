@@ -59,6 +59,7 @@ export const register = async (
 
     return res.status(200).json({
       message: 'user created successfully',
+      token: token,
     });
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -194,7 +195,7 @@ export const verifyOtp = async (
   const { otp } = req.body;
 
   if (!otp) {
-    res.status(404).json({ message: 'Invalid request' });
+    res.status(400).json({ message: 'Invalid request' });
   }
 
   const user = await User.findById(userId);

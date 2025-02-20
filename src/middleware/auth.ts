@@ -3,12 +3,13 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
 
 export const userAuth = async (
-  req: Request<{},{},{}>,
+  req: Request<{}, {}, {}>,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
   try {
-    const token = req.cookies.token || req.headers.authorization?.split('')[1];
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+
     if (!token) {
       return res.status(401).json({ message: 'Authentication token missing' });
     }
@@ -29,8 +30,6 @@ export const userAuth = async (
       });
     }
 
- 
-    
     req.userId = _id;
     next();
   } catch (err: unknown) {
