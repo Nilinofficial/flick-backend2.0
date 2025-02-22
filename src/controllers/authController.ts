@@ -45,11 +45,11 @@ export const register = async (
     });
 
     const mailOptions = {
-      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
       to: email,
-      subject: 'Message from Flarelabs!',
+      subject: 'Message from Flick!',
       html: `
-        <h1>Welcome to Flarelabs!</h1>
+        <h1>Welcome to Flick!</h1>
         <p>Hey <b>${firstName}</b>,</p>
         <p>Your account has been created with the email ID: <b>${email}</b>.</p>
       `,
@@ -155,7 +155,7 @@ export const sendOtp = async (
       });
     }
 
-    const otp = String(Math.floor(646672 * Math.random()));
+    const otp = String(Math.floor(1000 + Math.random() * 9000));
 
     user.verificationOtp = otp;
     user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
@@ -163,7 +163,7 @@ export const sendOtp = async (
     await user.save();
 
     const mailOptions = {
-      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
       to: user.email,
       subject: 'Account verification OTP',
       text: `Your OTP is ${otp}. Verify your account using this OTP.`,
@@ -195,7 +195,7 @@ export const verifyOtp = async (
   const { otp } = req.body;
 
   if (!otp) {
-    res.status(400).json({ message: 'Invalid request' });
+   return res.status(400).json({ message: 'Invalid OTP' });
   }
 
   const user = await User.findById(userId);
@@ -224,7 +224,7 @@ export const verifyOtp = async (
     await user.save();
 
     const mailOptions = {
-      from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+      from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
       to: user.email,
       subject: 'Account Verified',
       text: `Your account has been successfully verified`,
