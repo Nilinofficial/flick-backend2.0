@@ -41,11 +41,11 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         const mailOptions = {
-            from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+            from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
             to: email,
-            subject: 'Message from Flarelabs!',
+            subject: 'Message from Flick!',
             html: `
-        <h1>Welcome to Flarelabs!</h1>
+        <h1>Welcome to Flick!</h1>
         <p>Hey <b>${firstName}</b>,</p>
         <p>Your account has been created with the email ID: <b>${email}</b>.</p>
       `,
@@ -136,12 +136,12 @@ const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: 'User already verified',
             });
         }
-        const otp = String(Math.floor(646672 * Math.random()));
+        const otp = String(Math.floor(10000 + Math.random() * 90000));
         user.verificationOtp = otp;
         user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
         yield user.save();
         const mailOptions = {
-            from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+            from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
             to: user.email,
             subject: 'Account verification OTP',
             text: `Your OTP is ${otp}. Verify your account using this OTP.`,
@@ -169,7 +169,7 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     const { otp } = req.body;
     if (!otp) {
-        res.status(400).json({ message: 'Invalid request' });
+        return res.status(400).json({ message: 'Invalid OTP' });
     }
     const user = yield userModel_1.default.findById(userId);
     if (user.isVerified) {
@@ -191,7 +191,7 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         user.verificationOtpExpiresAt = 0;
         yield user.save();
         const mailOptions = {
-            from: `"Founder Flarelabs" <${process.env.SENDER_EMAIL}>`,
+            from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
             to: user.email,
             subject: 'Account Verified',
             text: `Your account has been successfully verified`,
