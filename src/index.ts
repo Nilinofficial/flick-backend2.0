@@ -7,6 +7,7 @@ import requestRouter from './routes/request';
 import profileRouter from './routes/profile';
 import userRouter from './routes/user';
 import cors from 'cors';
+import postsRouter from './routes/posts';
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
@@ -25,6 +26,7 @@ app.use('/auth', authRouter);
 app.use('/profile', profileRouter);
 app.use('/request', requestRouter);
 app.use('/user', userRouter);
+app.use('/posts', postsRouter);
 
 connectToDB().then(() =>
   app.listen(PORT, () => {

@@ -41,7 +41,7 @@ export const register = async (
     res.cookie('token', token, {
       httpOnly: true,
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     const mailOptions = {
@@ -96,7 +96,7 @@ export const login = async (
     res.cookie('token', token, {
       httpOnly: true,
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({

@@ -37,7 +37,7 @@ connectionRequestSchema.pre('save', function (next) {
 });
 
 const connectionRequestModel =
-  mongoose.models.connectionRequestModal ||
+  mongoose.models.connectionRequest ||
   mongoose.model('ConnectionRequest', connectionRequestSchema);
 
 export default connectionRequestModel;
