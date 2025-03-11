@@ -3,6 +3,7 @@ import cloudinary from '../utils/cloudinary';
 import fs from 'fs/promises';
 import Post from '../models/postModel';
 import { json } from 'stream/consumers';
+import connectionRequestModel from '../models/connectionRequestModel';
 
 export const addPost = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -46,7 +47,25 @@ export const getAllposts = async (
   res: Response
 ): Promise<any> => {
   try {
-    const posts = await Post.find().populate('userId', ['firstName']);
+    const loggedInUserId = req.userId;
+    const friends = await connectionRequestModel
+      .find({ status: 'accepted' })
+      .select('fromUserId toUserId')
+      .lean();
+
+    console.log(friends);
+
+    const friendsId = friends
+      .map((friend) => [friend.fromUserId, friend.toUserId])
+      .flat()
+      .filter((id) => id.toString() !== loggedInUserId?.toString());
+
+    console.log(friendsId);
+
+    const posts = await Post.find({ userId: { $in: friendsId } }).populate(
+      'userId',
+      ['firstName']
+    );
 
     return res.status(200).json({
       message: 'successfully fetched posts',
