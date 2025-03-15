@@ -67,7 +67,7 @@ export const respondToRequest = async (
   const loggedInUserId = userId;
 
   try {
-    await connectionResponseValidation(status, requestId, loggedInUserId);
+    await connectionResponseValidation(status, requestId);
 
     const connectionRequest = await connectionRequestModel.findOne({
       toUserId: loggedInUserId,

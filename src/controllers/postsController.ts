@@ -49,18 +49,17 @@ export const getAllposts = async (
   try {
     const loggedInUserId = req.userId;
     const friends = await connectionRequestModel
-      .find({ status: 'accepted' })
-      .select('fromUserId toUserId')
+      .find({
+        status: 'accepted',
+        $or: [{ fromUserId: loggedInUserId }, { toUserId: loggedInUserId }],
+      })
+      .select('fromUserId toUserId -_id')
       .lean();
-
-    console.log(friends);
 
     const friendsId = friends
       .map((friend) => [friend.fromUserId, friend.toUserId])
       .flat()
       .filter((id) => id.toString() !== loggedInUserId?.toString());
-
-    console.log(friendsId);
 
     const posts = await Post.find({ userId: { $in: friendsId } }).populate(
       'userId',

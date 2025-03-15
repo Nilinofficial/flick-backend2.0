@@ -39,7 +39,6 @@ export const connectionRequestValidation = async (
 export const connectionResponseValidation = async (
   status: string,
   requestId: string,
-  loggedInUserId: mongoose.Schema.Types.ObjectId
 ) => {
   const validResponseStatus = ['accepted', 'rejected'];
 

@@ -16,7 +16,7 @@ export const register = async (
   req: Request<{}, {}, RegisterReqProps>,
   res: Response
 ): Promise<any> => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, profilePicUrl } = req.body;
 
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({ message: 'All fields are required' });
@@ -31,6 +31,7 @@ export const register = async (
       lastName,
       email,
       password: hashedPassword,
+      profilePicUrl,
     });
 
     await user.save();
@@ -195,7 +196,7 @@ export const verifyOtp = async (
   const { otp } = req.body;
 
   if (!otp) {
-   return res.status(400).json({ message: 'Invalid OTP' });
+    return res.status(400).json({ message: 'Invalid OTP' });
   }
 
   const user = await User.findById(userId);

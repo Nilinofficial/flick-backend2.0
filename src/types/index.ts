@@ -6,6 +6,7 @@ export interface RegisterReqProps {
   lastName: string;
   email: string;
   password: string;
+  profilePicUrl: string;
 }
 
 export interface LoginReqProps {
