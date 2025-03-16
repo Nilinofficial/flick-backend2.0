@@ -56,7 +56,7 @@ export const register = async (
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions);
 
     return res.status(200).json({
       message: 'user created successfully',
@@ -156,7 +156,7 @@ export const sendOtp = async (
       });
     }
 
-    const otp = String(Math.floor(10000 + Math.random() * 90000));
+    const otp = String(Math.floor(1000 + Math.random() * 90000));
 
     user.verificationOtp = otp;
     user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
