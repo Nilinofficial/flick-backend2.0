@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.respondToRequest = exports.handleConnectionRequest = void 0;
 const connectionRequestModel_1 = __importDefault(require("../models/connectionRequestModel"));
 const requestValidation_1 = require("../utils/requestValidation");
+const socket_1 = require("../utils/socket");
 const handleConnectionRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -32,6 +33,12 @@ const handleConnectionRequest = (req, res) => __awaiter(void 0, void 0, void 0, 
         });
         const connectionRequestResponse = yield connectRequest.save();
         if (status === 'interested') {
+            const io = (0, socket_1.getIO)();
+            // ✅ Notify received a friend request
+            io.to(toUserId).emit('friendRequestReceived', {
+                fromUserId,
+                savedRequest: connectionRequestResponse,
+            });
             return res.status(200).json({
                 message: `Connect request sent`,
                 data: connectionRequestResponse,
@@ -64,7 +71,7 @@ const respondToRequest = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const requestId = req.params.requestId;
     const loggedInUserId = userId;
     try {
-        yield (0, requestValidation_1.connectionResponseValidation)(status, requestId, loggedInUserId);
+        yield (0, requestValidation_1.connectionResponseValidation)(status, requestId);
         const connectionRequest = yield connectionRequestModel_1.default.findOne({
             toUserId: loggedInUserId,
             status: 'interested',

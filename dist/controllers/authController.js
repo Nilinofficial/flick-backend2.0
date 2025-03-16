@@ -19,7 +19,7 @@ const authValidation_1 = require("../utils/authValidation");
 const nodemailer_1 = __importDefault(require("../config/nodemailer"));
 const validator_1 = __importDefault(require("validator"));
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, profilePicUrl } = req.body;
     if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: 'All fields are required' });
     }
@@ -31,6 +31,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             lastName,
             email,
             password: hashedPassword,
+            profilePicUrl,
         });
         yield user.save();
         const token = yield user.generateJWT();
@@ -38,7 +39,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.cookie('token', token, {
             httpOnly: true,
             secure: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            // maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         const mailOptions = {
             from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
@@ -84,7 +85,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.cookie('token', token, {
             httpOnly: true,
             secure: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            // maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         return res.json({
             message: `user successfully loggedIn`,

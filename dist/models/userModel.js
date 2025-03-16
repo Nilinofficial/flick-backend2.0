@@ -75,7 +75,7 @@ userSchema.methods.generateJWT = function () {
             throw new Error('JWT_SECRET is not defined in the environment variables');
         }
         return jsonwebtoken_1.default.sign({ _id: this._id }, secret, {
-            expiresIn: '1d',
+        // expiresIn: '1d',
         });
     });
 };

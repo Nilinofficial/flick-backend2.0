@@ -11,9 +11,6 @@ export const addPost = async (req: Request, res: Response): Promise<any> => {
     const file = req.file;
     const userId = req.userId;
 
-    console.log(caption);
-    console.log(typeof caption);
-
     if (!file) {
       return res.status(400).json({ message: 'No image file provided.' });
     }

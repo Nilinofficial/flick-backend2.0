@@ -5,4 +5,5 @@ const userController_1 = require("../controllers/userController");
 const auth_1 = require("../middleware/auth");
 const userRouter = (0, express_1.Router)();
 userRouter.get('/requests', auth_1.userAuth, userController_1.getFriendRequests);
+userRouter.get('/findFriends', auth_1.userAuth, userController_1.findFriends);
 exports.default = userRouter;

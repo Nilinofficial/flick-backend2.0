@@ -39,7 +39,7 @@ const connectionRequestValidation = (fromUserId, toUserId, status) => __awaiter(
     }
 });
 exports.connectionRequestValidation = connectionRequestValidation;
-const connectionResponseValidation = (status, requestId, loggedInUserId) => __awaiter(void 0, void 0, void 0, function* () {
+const connectionResponseValidation = (status, requestId) => __awaiter(void 0, void 0, void 0, function* () {
     const validResponseStatus = ['accepted', 'rejected'];
     if (!validResponseStatus.includes(status)) {
         throw new Error('Invalid status type');

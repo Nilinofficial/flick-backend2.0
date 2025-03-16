@@ -24,6 +24,7 @@ const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             isVerified: user.isVerified,
             firstName: user.firstName,
             lastName: user.lastName,
+            userId: user._id,
         });
     }
     catch (err) {

@@ -33,6 +33,6 @@ connectionRequestSchema.pre('save', function (next) {
     }
     next();
 });
-const connectionRequestModel = mongoose_1.default.models.connectionRequestModal ||
+const connectionRequestModel = mongoose_1.default.models.connectionRequest ||
     mongoose_1.default.model('ConnectionRequest', connectionRequestSchema);
 exports.default = connectionRequestModel;
