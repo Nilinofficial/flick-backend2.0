@@ -137,7 +137,7 @@ const sendOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: 'User already verified',
             });
         }
-        const otp = String(Math.floor(1000 + Math.random() * 90000));
+        const otp = String(Math.floor(1000 + Math.random() * 9000));
         user.verificationOtp = otp;
         user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
         yield user.save();
