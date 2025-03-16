@@ -15,6 +15,7 @@ export const getProfile = async (
       isVerified: user.isVerified,
       firstName: user.firstName,
       lastName: user.lastName,
+      userId: user._id,
     });
   } catch (err) {
     if (err instanceof Error) {

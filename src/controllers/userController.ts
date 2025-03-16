@@ -40,7 +40,6 @@ export const findFriends = async (
   const userId = req.userId;
 
   try {
-    const flickUsers = await User.find({ _id: { $ne: userId } });
     const connectionRequest = await connectionRequestModel
       .find({
         $or: [{ fromUserId: userId }, { toUserId: userId }],
