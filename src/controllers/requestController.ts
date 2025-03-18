@@ -4,7 +4,6 @@ import {
   connectionRequestValidation,
   connectionResponseValidation,
 } from '../utils/requestValidation';
-import { getIO } from '../utils/socket';
 
 export const handleConnectionRequest = async (
   req: Request,
@@ -32,13 +31,6 @@ export const handleConnectionRequest = async (
     const connectionRequestResponse = await connectRequest.save();
 
     if (status === 'interested') {
-      const io = getIO();
-      // ✅ Notify received a friend request
-      io.to(toUserId).emit('friendRequestReceived', {
-        fromUserId,
-        savedRequest: connectionRequestResponse,
-      });
-
       return res.status(200).json({
         message: `Connect request sent`,
         data: connectionRequestResponse,

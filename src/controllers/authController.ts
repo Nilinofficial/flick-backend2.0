@@ -45,19 +45,6 @@ export const register = async (
       // maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    const mailOptions = {
-      from: `"Founder Flick" <${process.env.SENDER_EMAIL}>`,
-      to: email,
-      subject: 'Message from Flick!',
-      html: `
-        <h1>Welcome to Flick!</h1>
-        <p>Hey <b>${firstName}</b>,</p>
-        <p>Your account has been created with the email ID: <b>${email}</b>.</p>
-      `,
-    };
-
-    transporter.sendMail(mailOptions);
-
     return res.status(200).json({
       message: 'user created successfully',
       token: token,
@@ -156,7 +143,7 @@ export const sendOtp = async (
       });
     }
 
-    const otp = String(Math.floor(1000 + Math.random() * 9000));
+    const otp = String(Math.floor(10000 + Math.random() * 90000));
 
     user.verificationOtp = otp;
     user.verificationOtpExpiresAt = Date.now() + 5 * 60 * 1000;
@@ -231,7 +218,7 @@ export const verifyOtp = async (
       text: `Your account has been successfully verified`,
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions);
 
     return res.status(200).json({
       message: 'Account successfully Verified',
