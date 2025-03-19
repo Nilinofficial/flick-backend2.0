@@ -16,6 +16,7 @@ export const getProfile = async (
       firstName: user.firstName,
       lastName: user.lastName,
       userId: user._id,
+      profilePicUrl: user.profilePicUrl || '',
     });
   } catch (err) {
     if (err instanceof Error) {

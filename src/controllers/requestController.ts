@@ -4,6 +4,7 @@ import {
   connectionRequestValidation,
   connectionResponseValidation,
 } from '../utils/requestValidation';
+import User from '../models/userModel';
 
 export const handleConnectionRequest = async (
   req: Request,
@@ -21,14 +22,25 @@ export const handleConnectionRequest = async (
     const status = req.params.status;
 
     await connectionRequestValidation(fromUserId, toUserId, status);
+    const friend = await User.findById(toUserId);
 
-    const connectRequest = new connectionRequestModel({
-      fromUserId,
-      toUserId,
-      status,
-    });
+    let connectionRequest;
 
-    const connectionRequestResponse = await connectRequest.save();
+    if (friend.isAccountPublic) {
+      connectionRequest = new connectionRequestModel({
+        fromUserId,
+        toUserId,
+        status: 'accepted',
+      });
+    } else {
+      connectionRequest = new connectionRequestModel({
+        fromUserId,
+        toUserId,
+        status,
+      });
+    }
+
+    const connectionRequestResponse = await connectionRequest.save();
 
     if (status === 'interested') {
       return res.status(200).json({

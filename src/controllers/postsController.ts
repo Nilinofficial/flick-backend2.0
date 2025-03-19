@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import cloudinary from '../utils/cloudinary';
 import fs from 'fs/promises';
 import Post from '../models/postModel';
-import { json } from 'stream/consumers';
 import connectionRequestModel from '../models/connectionRequestModel';
 
 export const addPost = async (req: Request, res: Response): Promise<any> => {
@@ -60,7 +59,7 @@ export const getAllposts = async (
 
     const posts = await Post.find({ userId: { $in: friendsId } }).populate(
       'userId',
-      ['firstName']
+      ['firstName', 'profilePicUrl']
     );
 
     return res.status(200).json({

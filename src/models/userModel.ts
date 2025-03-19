@@ -55,6 +55,10 @@ const userSchema: Schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  isAccountPublic: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 userSchema.methods.generateJWT = async function () {
